@@ -1,15 +1,15 @@
-Search for a business:
+{% comment %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/custom.css') }}"> {% endcomment %}
+<div class = "parent">
+    <div class = "child inline"><h1>Search for a business</h1></div>
 
-<div class="topnav">
-  <a class="active" href="#home">Edit Profile</a>
-  <form>
-    <input type="text" placeholder="Search For a Location." id="location" name="location">
+    <form class = "child inline">
+    <label for="searchTopic">Search:</label><br>
+    <input type="text" id="searchTopic" name="searchTopic"><br>
     <input type="submit" value="Submit">
-  </form>  
+    </form>
 </div>
 
-<b>Or</b>
-Select A Priority:
+<div><h1>Or Select a priority</h1></div>
 
 <div class="btn-group">
   <button>Quietness</button>
@@ -19,12 +19,9 @@ Select A Priority:
   <button>Most Reviewed</button>
 </div>
 
-<div>
-Results:
-</div>
-<div>
-Write a Review:
-</div>
+<div><h2>Results</h2></div>
+
+<div><h1>Write A Review</h1></div>
 
 <form>
   <label for="fname">Business name:</label><br>
