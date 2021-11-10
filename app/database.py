@@ -2,6 +2,49 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 
+def fetch_locations() -> dict:
+    conn = db.connect()
+    query_results = conn.execute("Select * from Locations;").fetchall()
+    conn.close()
+    res = []
+    for result in query_results:
+        item = {
+            "location_id": result[0],
+            "loc_name": result[1],
+            "business_type": result[2],
+            "phys_address": result[3]
+        }
+    res.append(item)
+    return res
+
+def fetch_logins() -> dict:
+    conn = db.connect()
+    query_results = conn.execute("Select * from Login;").fetchall()
+    conn.close()
+    res = []
+    for result in query_results:
+        item = {
+            "user_id": result[0],
+            "username": result[1],
+            "user_password": result[2],
+        }
+    res.append(item)
+    return res
+
+def fetch_reviews() -> dict:
+    conn = db.connect()
+    query_results = conn.execute("Select * from Reviews;").fetchall()
+    conn.close()
+    res = []
+    for result in query_results:
+        item = {
+            "location_id": result[0],
+            "review_id": result[1],
+            "review": result[2],
+        }
+    res.append(item)
+    return res
+
 @app.route("/delete_/<int:task_id>", methods=['POST'])
 def delete(task_id):
     try:
