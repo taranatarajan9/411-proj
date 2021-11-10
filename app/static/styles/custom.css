@@ -46,3 +46,14 @@
   .btn-group button:hover {
     background-color: #3e8e41;
   }
+
+  .parent {
+    padding: 1rem;
+    display: flex;
+  }
+  .child {
+      
+  }
+  .inline{
+    display: inline-block;
+  }
