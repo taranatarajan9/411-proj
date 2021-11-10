@@ -4,9 +4,9 @@ instance_class: F1
 
 env_variables:
   MSQL_USER: 'root'
-  MYSQL_PASSWORD: 'password'
+  MYSQL_PASSWORD: ''
   MYSQL_DB: 'todo'
-  MYSQL_HOST: 1.2.3.4.5
+  MYSQL_HOST: 35.238.30.35
 
 handlers: 
 - url: /img

@@ -1,6 +1,6 @@
 import os
 import sqlalchemy
-from yaml import load, loader
+from yaml import load, Loader
 
 from flask import Flask
 from flask.templating import render_template
@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 def init_connect_engine():
     if os.environ.get('GAE_ENV') != 'standard':
-        variables = load(open("app.yaml"), Loader=loader)
+        variables = load(open("app.yaml"), Loader=Loader)
         env_variables = variables['env_variables']
         for var in env_variables:
             os.environ[var] = env_variables[var]
