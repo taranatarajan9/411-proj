@@ -1,4 +1,41 @@
-import random
+from flask import render_template, request, jsonify
+from app import app
+from app import database as db_helper
 
-def get_name():
-    return random.choice(['Ann', 'Bob', 'Chris'])
+@app.route("/delete_/<int:task_id>", methods=['POST'])
+def delete(task_id):
+    try:
+        # db_helper.remove_task_by_id(task_id)
+        result = {'success': True, 'response': 'Removed task'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
+
+@app.route("/search/<string:name>", methods=['POST'])
+def update(task_id):
+    data = request.get_json()
+    print(data)
+    try:
+        if "status" in data:
+            # db_helper.update_status_entry(task_id, data["status"])
+            result = {'success': True, 'response': 'Status Updated'}
+        elif "description" in data:
+            # db_helper.update_task_entry(task_id, data["description"])
+            result = {'success': True, 'response': 'Task Updated'}
+        else:
+            result = {'success': True, 'response': 'Nothing Updated'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
+
+@app.route("/create_review/<string:review>", methods=['POST'])
+def create():
+    data = request.get_json()
+    # db_helper.insert_new_task(data['description'])
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
+
+@app.route("/")
+def homepage():
+    items = db_helper.fetch_todo()
+    return render_template("index.html", items=items)
