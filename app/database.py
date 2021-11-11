@@ -45,40 +45,55 @@ def fetch_reviews() -> dict:
     res.append(item)
     return res
 
-@app.route("/delete_/<int:task_id>", methods=['POST'])
-def delete(task_id):
-    try:
-        # db_helper.remove_task_by_id(task_id)
-        result = {'success': True, 'response': 'Removed task'}
-    except:
-        result = {'success': False, 'response': 'Something went wrong'}
-    return jsonify(result)
 
-@app.route("/search/<string:name>", methods=['POST'])
-def update(task_id):
-    data = request.get_json()
-    print(data)
-    try:
-        if "status" in data:
-            # db_helper.update_status_entry(task_id, data["status"])
-            result = {'success': True, 'response': 'Status Updated'}
-        elif "description" in data:
-            # db_helper.update_task_entry(task_id, data["description"])
-            result = {'success': True, 'response': 'Task Updated'}
-        else:
-            result = {'success': True, 'response': 'Nothing Updated'}
-    except:
-        result = {'success': False, 'response': 'Something went wrong'}
-    return jsonify(result)
+def update_password(username: str, new_password: str) -> None:
+    conn = db.connect()
+    query = 'Update Login set user_password = "{}" where username = {};'.format(new_password, username)
+    conn.execute(query)
+    conn.close()
 
-@app.route("/create_review/<string:review>", methods=['POST'])
-def create():
-    data = request.get_json()
-    # db_helper.insert_new_task(data['description'])
-    result = {'success': True, 'response': 'Done'}
-    return jsonify(result)
 
-@app.route("/")
-def homepage():
-    items = db_helper.fetch_todo()
-    return render_template("index.html", items=items)
+def insert_new_review(text: str, loc_id: int) ->  int:
+
+    conn = db.connect()
+    review_id = np.random.randint(1000,2000)
+    user_id = np.random.randint(0,1000)
+    query = 'Insert Into Reviews (task, status) VALUES ("{}", "{}");'.format(
+        text, "Todo")
+    conn.execute(query)
+    query_results = conn.execute("Select LAST_INSERT_ID();")
+    query_results = [x for x in query_results]
+    task_id = query_results[0][0]
+    conn.close()
+
+    return task_id
+
+def insert_new_review(text: str, location_id:int, review_id:int) ->  int:
+
+    conn = db.connect()
+    query = 'Insert Into Reviews (location_id, review_id, review) VALUES ("{}", "{}", "{}");'.format(location_id, review_id, text)
+    conn.execute(query)
+    conn.close()
+
+
+def remove_review_by_id(review_id: int) -> None:
+    """ remove entries based on review ID """
+    conn = db.connect()
+    query = 'Delete From Review where review_id={};'.format(review_id)
+    conn.execute(query)
+    conn.close()
+
+def search_location_name(loc_name: str)  -> dict:
+    conn = db.connect()
+    query_results = conn.execute("Select * from Locations Where Locations.loc_name is {};".format(loc_name)).fetchall()
+    conn.close()
+    res = []
+    for result in query_results:
+        item = {
+            "location_id": result[0],
+            "loc_name": result[1],
+            "business_type": result[2],
+            "phys_address": result[3]
+        }
+    res.append(item)
+    return res
