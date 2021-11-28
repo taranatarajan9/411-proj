@@ -1,6 +1,7 @@
 from flask import render_template, request, jsonify
-from app import app
+#from app import db
 from app import database as db_helper
+import numpy as np
 
 def fetch_locations() -> dict:
     conn = db.connect()
@@ -30,21 +31,6 @@ def fetch_logins() -> dict:
         }
     res.append(item)
     return res
-
-def fetch_reviews() -> dict:
-    conn = db.connect()
-    query_results = conn.execute("Select * from Reviews;").fetchall()
-    conn.close()
-    res = []
-    for result in query_results:
-        item = {
-            "location_id": result[0],
-            "review_id": result[1],
-            "review": result[2],
-        }
-    res.append(item)
-    return res
-
 
 def update_password(username: str, new_password: str) -> None:
     conn = db.connect()
@@ -97,3 +83,23 @@ def search_location_name(loc_name: str)  -> dict:
         }
     res.append(item)
     return res
+
+def study_space() -> list:
+    conn = db.connect()
+    advanced_query = conn.execute(
+        """SELECT DISTINCT Location.location_id, Location.loc_name, Qual_Values.score_id, Qual_Values.quietness
+            FROM Locations left join Qual_Values on Locations.location_id = Qual_Values.location_id
+            WHERE Location.business_type IN (SELECT Location.business_type FROM Location WHERE Location.business_type LIKE "%/study%") AND Qual_Values.quietness < 5  
+            ORDER BY Qual_Values.score_id DESC LIMIT 10;""").fetchall()
+    conn.close()
+    return advanced_query
+
+def count_reviews() -> list:
+    conn = db.connect()
+    advanced_query = conn.execute(
+        """SELECT DISTINCT Location.loc_name, Location.business_type, Location.phys_address, COUNT(Reviews.review_id), Qual_Values.score_id
+            FROM Qual_Values JOIN Locations LEFT JOIN Reviews on (Locations.location_id = Reviews.location_id)
+            GROUP BY Location.loc_name, Location.business_type, Location.phys_address
+            ORDER BY COUNT(Reviews.review_id) DESC, Qual_Values.score_id DESC LIMIT 10;""").fetchall()
+    conn.close()
+    return advanced_query
